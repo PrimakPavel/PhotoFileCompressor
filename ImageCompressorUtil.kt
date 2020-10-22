@@ -1,4 +1,4 @@
-package com.wezom.haulk.utils
+package com.example.package
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -10,7 +10,6 @@ import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
 
-@Suppress("BlockingMethodInNonBlockingContext")
 object ImageCompressorUtil {
     private const val JPEG_FORMAT = ".jpeg"
     private const val JPG_FORMAT = ".jpg"
@@ -32,7 +31,7 @@ object ImageCompressorUtil {
 
         var imageQuality = MAX_QUALITY
         val image = BitmapFactory.decodeFile(photoFile.absolutePath)
-        val compressingDone = false
+        var compressingDone = false
         while (!compressingDone) {
             // save exif orientation metadata for this photo file
             val oldExif = ExifInterface(photoFile.path)
@@ -60,10 +59,10 @@ object ImageCompressorUtil {
             if (imageSize > compressSizeKb)
                 imageQuality -= QUALITY_DECREMENT_STEP
             else {
-                return@withContext true
+                compressingDone = true                
             }
             if (imageQuality <= QUALITY_DECREMENT_STEP) {
-                return@withContext false
+                compressingDone = false                
             }
         }
         return@withContext compressingDone
